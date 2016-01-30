@@ -1,18 +1,18 @@
 import java.util.Random;
 
 //Класс для определения координат дома
-class Coordinates implements Comparable {
+class House {
     private double x = 0;
     private double y = 0;
     private double z = 0;
 
-    Coordinates(double x, double y, double z) {
+    House(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    Coordinates() {
+    House() {
         this.x = 0;
         this.y = 0;
         this.z = 0;
@@ -56,8 +56,4 @@ class Coordinates implements Comparable {
         this.z = random.nextDouble() * 500 + 1;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        return (int) (-((Coordinates) o).getX() + this.getX());
-    }
 }

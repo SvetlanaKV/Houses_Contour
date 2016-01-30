@@ -5,11 +5,11 @@ import java.util.List;
 
 public class PaintContour extends JPanel {
 
-    private List<Coordinates> forGraphics;
-    private List<Coordinates> initialHouses;
+    private List<House> forGraphics;
+    private List<House> initialHouses;
     private Graphics2D graphics;
 
-    public PaintContour(List<Coordinates> forGraphics, List<Coordinates> initialHouses) {
+    public PaintContour(List<House> forGraphics, List<House> initialHouses) {
         this.forGraphics = forGraphics;
         this.initialHouses = initialHouses;
     }

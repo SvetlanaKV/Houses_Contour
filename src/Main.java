@@ -6,9 +6,9 @@ import javax.swing.JFrame;
 public class Main extends JFrame {
 
     static int numberOfHouses = 10;
-    static List<Coordinates> houses = new ArrayList<>();
-    static TreeSet<Double> partition = new TreeSet<>();
-    static List<Coordinates> baseForGraphics = new ArrayList<>();
+    static List<House> houses = new ArrayList<>();
+    static Queue<Partition> partitions = new PriorityQueue<>();
+    static List<House> baseForGraphics = new ArrayList<>();
 
     Main() {
         super("Houses Contour");
@@ -29,66 +29,70 @@ public class Main extends JFrame {
 
     static void generateHouses() {
         for (int i = 0; i < numberOfHouses; i++) {
-            Coordinates newHouse = new Coordinates();
+            House newHouse = new House();
             newHouse.setRandom();
             houses.add(newHouse);
-            partition.add(newHouse.getX());
-            partition.add(newHouse.getY());
+            Partition newPartitionX = new Partition(newHouse.getX(), newHouse.getZ(), true);
+            Partition newPartitionY = new Partition(newHouse.getY(), newHouse.getZ(), false);
+            partitions.add(newPartitionX);
+            partitions.add(newPartitionY);
         }
-        /*
-        houses.sort(new Comparator<Coordinates>() {
-            public int compare(Coordinates o1, Coordinates o2) {
-                return o1.compareTo(o2);
-            }
-        });
-        */
+        //трудоемкость: 2n log (2n)
     }
 
     static void generateHousesDouble() {
         for (int i = 0; i < numberOfHouses; i++) {
-            Coordinates newHouse = new Coordinates();
+            House newHouse = new House();
             newHouse.setRandomDouble();
             houses.add(newHouse);
-            partition.add(newHouse.getX());
-            partition.add(newHouse.getY());
+            Partition newPartitionX = new Partition(newHouse.getX(), newHouse.getZ(), true);
+            Partition newPartitionY = new Partition(newHouse.getY(), newHouse.getZ(), false);
+            partitions.add(newPartitionX);
+            partitions.add(newPartitionY);
         }
-        /*
-        houses.sort(new Comparator<Coordinates>() {
-            public int compare(Coordinates o1, Coordinates o2) {
-                return o1.compareTo(o2);
-            }
-        });
-        */
+        //трудоемкость: 2n log (2n) = O(n logn)
     }
 
     static void clearAll() {
         houses.clear();
-        partition.clear();
+        partitions.clear();
         baseForGraphics.clear();
+        //трудоемкость 5n = O(n)
     }
 
     static void findBaseForGraphics() {
         //определяем отрезки, внутри которых максимальные высота будет постоянна
-        int partitionInitialSize = partition.size();
-        double element = partition.pollFirst();
+        int partitionInitialSize = partitions.size();
+        //храним текущие высоты и их частоту, если таких высот несколько
+        TreeMap<Double, Integer> currentZ = new TreeMap<>(Comparator.reverseOrder());
+        Partition element = partitions.poll(); //O(1)
         for (int i = 1; i < partitionInitialSize; i++) {
-            Coordinates newCut = new Coordinates(element, 0, 0);
-            element = partition.pollFirst();
-            newCut.setY(element);
-            baseForGraphics.add(newCut);
-        }
-        //определяем максимальную высоту у отрезков
-        for (int i = 0; i < baseForGraphics.size(); i++) {
-            double start = baseForGraphics.get(i).getX();
-            double finish = baseForGraphics.get(i).getY();
-            for (int j = 0; j < houses.size(); j++) {
-                if (houses.get(j).getX() <= start && houses.get(j).getY() >= finish) {
-                    if (baseForGraphics.get(i).getZ() < houses.get(j).getZ()) {
-                        baseForGraphics.get(i).setZ(houses.get(j).getZ());
-                    }
+            House newCut = new House(element.getX(), 0, 0);
+            if (element.isStart()) {
+                if (currentZ.containsKey(element.getZ())) {
+                    int frequency = currentZ.get(element.getZ());
+                    currentZ.put(element.getZ(), frequency + 1); //O(log n)
+                } else {
+                    currentZ.put(element.getZ(), 1);
+                }
+            } else {
+                if (currentZ.get(element.getZ()) > 1) {
+                    int frequency = currentZ.get(element.getZ());
+                    currentZ.put(element.getZ(), frequency - 1);
+                } else {
+                    currentZ.remove(element.getZ());
                 }
             }
+            if (currentZ.isEmpty()) {
+                newCut.setZ(0);
+            } else {
+                newCut.setZ(currentZ.firstKey());
+            }
+            element = partitions.poll();
+            newCut.setY(element.getX());
+            baseForGraphics.add(newCut);
         }
+        //Трудоемкость 2n * (log 2n + constT ) = O(n log n)
     }
 
 }
