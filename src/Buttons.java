@@ -10,7 +10,8 @@ public class Buttons extends JPanel {
     public Buttons(PaintContour pc) {
 
         setLayout(new GridLayout(3, 1));
-        buttonGenerateInt = new JButton("Generate Houses (int coordinates)");
+        //buttonGenerateInt = new JButton("Generate Houses (int coordinates)");
+        buttonGenerateInt = new JButton("Do Example: {0,100,100} and {100,200,100}");
         ButtonGenerateDouble = new JButton("Generate Houses (double coordinates)");
         buttonPaint = new JButton("Paint Contour");
         buttonPaint.setEnabled(false);

@@ -39,6 +39,8 @@ public class Main extends JFrame {
             partitions.add(newPartitionY);
         }
         */
+
+        //проверка "схлопывания домов"
         House newHouse = new House();
         newHouse.setX(0);
         newHouse.setY(100);
@@ -58,6 +60,20 @@ public class Main extends JFrame {
         Partition newPartitionY1 = new Partition(newHouse1.getY(), newHouse1.getZ(), false);
         partitions.add(newPartitionX1);
         partitions.add(newPartitionY1);
+
+        //для проверки дома длиной = 0
+        /*
+        House newHouse2 = new House();
+        newHouse2.setX(100);
+        newHouse2.setY(100);
+        newHouse2.setZ(200);
+        houses.add(newHouse2);
+        Partition newPartitionX2 = new Partition(newHouse2.getX(), newHouse2.getZ(), true);
+        Partition newPartitionY2 = new Partition(newHouse2.getY(), newHouse2.getZ(), false);
+        partitions.add(newPartitionX2);
+        partitions.add(newPartitionY2);
+        */
+
         //трудоемкость: 2n log (2n)
     }
 
@@ -87,8 +103,9 @@ public class Main extends JFrame {
         //храним текущие высоты и их частоту, если таких высот несколько
         TreeMap<Double, Integer> currentZ = new TreeMap<>(Comparator.reverseOrder());
         Partition element = partitions.poll(); //O(1)
+        int index = 0;
         for (int i = 1; i < partitionInitialSize; i++) {
-            House newCut = new House(element.getX(), 0, 0);
+            //House newCut = new House(element.getX(), 0, 0);
             if (element.isStart()) {
                 if (currentZ.containsKey(element.getZ())) {
                     int frequency = currentZ.get(element.getZ());
@@ -104,14 +121,21 @@ public class Main extends JFrame {
                     currentZ.remove(element.getZ());
                 }
             }
+            double currentChosenZ;
             if (currentZ.isEmpty()) {
-                newCut.setZ(0);
+                currentChosenZ = 0;
             } else {
-                newCut.setZ(currentZ.firstKey());
+                currentChosenZ = currentZ.firstKey();
             }
+            House newCut = new House(element.getX(), 0, currentChosenZ);
             element = partitions.poll();
             newCut.setY(element.getX());
-            baseForGraphics.add(newCut);
+            if (index > 0 && currentChosenZ == baseForGraphics.get(index - 1).getZ()) {
+                baseForGraphics.get(index - 1).setY(newCut.getY());
+            } else {
+                baseForGraphics.add(newCut);
+                index++;
+            }
         }
         //Трудоемкость 2n * (log 2n + constT ) = O(n log n)
     }
