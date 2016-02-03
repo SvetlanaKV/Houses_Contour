@@ -28,6 +28,7 @@ public class Main extends JFrame {
     }
 
     static void generateHouses() {
+        /*
         for (int i = 0; i < numberOfHouses; i++) {
             House newHouse = new House();
             newHouse.setRandom();
@@ -37,6 +38,26 @@ public class Main extends JFrame {
             partitions.add(newPartitionX);
             partitions.add(newPartitionY);
         }
+        */
+        House newHouse = new House();
+        newHouse.setX(0);
+        newHouse.setY(100);
+        newHouse.setZ(100);
+        houses.add(newHouse);
+        Partition newPartitionX = new Partition(newHouse.getX(), newHouse.getZ(), true);
+        Partition newPartitionY = new Partition(newHouse.getY(), newHouse.getZ(), false);
+        partitions.add(newPartitionX);
+        partitions.add(newPartitionY);
+
+        House newHouse1 = new House();
+        newHouse1.setX(100);
+        newHouse1.setY(200);
+        newHouse1.setZ(100);
+        houses.add(newHouse1);
+        Partition newPartitionX1 = new Partition(newHouse1.getX(), newHouse1.getZ(), true);
+        Partition newPartitionY1 = new Partition(newHouse1.getY(), newHouse1.getZ(), false);
+        partitions.add(newPartitionX1);
+        partitions.add(newPartitionY1);
         //трудоемкость: 2n log (2n)
     }
 
